@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"os/exec"
 	"weather-api/config"
 	"weather-api/external/weatherapi"
 	"weather-api/infra/redis"
@@ -10,6 +12,16 @@ import (
 )
 
 func Serve() {
+	// ⚡ Automate Redis Startup
+	fmt.Println("🚀 Ensuring Redis is running in Docker...")
+	cmd := exec.Command("/bin/bash", "./docker-run-redis.sh")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("⚠️ Error starting Redis script: %v\nOutput: %s\n", err, string(output))
+	} else {
+		fmt.Println("✅ Redis startup script executed successfully.")
+	}
+
 	cnf := config.GetConfig()
 
 	// 1. Initialize Infrastucture (Redis)
